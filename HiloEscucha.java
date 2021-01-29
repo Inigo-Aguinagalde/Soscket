@@ -1,29 +1,38 @@
 package Server;
 
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Socket;
 
 public class HiloEscucha extends Thread {
 
     Socket s;
+    BufferedReader br;
+    BufferedWriter bw;
+    HiloMandarMensaje hm;
 
-    public HiloEscucha(Socket s) {
-        this.s = s;
+    public HiloEscucha(Socket s) throws IOException {
+        this.s=s;
+        br=new BufferedReader(new InputStreamReader(s.getInputStream()));
+        bw= new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+        hm = new HiloMandarMensaje(bw);
 
     }
 
     @Override
     public void run() {
-        BufferedReader br = null;
-        String mensaje = null;
-        try {
-            br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-            while ((mensaje = br.readLine()) != null) {
-                System.out.println(mensaje);
+
+        crearHM();
+
+        try  {
+            String line;
+            while ( (line = br.readLine()) != null) {
+                System.out.println(line);
+
             }
+
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -31,5 +40,8 @@ public class HiloEscucha extends Thread {
 
     }
 
+    public void crearHM() {
+        hm.start();
+    }
 
 }

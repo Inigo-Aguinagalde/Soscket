@@ -2,28 +2,31 @@ package Server;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 
 public class Servidor {
 
-    static ConexionCliente[] CC = new ConexionCliente[2];
+    static ArrayList<ConexionCliente> listaConexion = new ArrayList<>();
 
     public static void main(String[] args) {
+
 
 
         try {
             ServerSocket ss = new ServerSocket(1234);
 
 
-            for(int i=0;i<2;i++){
+            while(true) {
 
 
                 Socket socket = ss.accept();
+                ConexionCliente cc=new ConexionCliente(socket);
 
-                CC[i] = new ConexionCliente(socket);
-                CC[i].start();
+                listaConexion.add(cc);
+                cc.start();
 
-                }
+            }
 
         } catch (Exception e) {
             System.out.println(e);
@@ -32,9 +35,9 @@ public class Servidor {
 
     public static void broadcast(String mensaje) {
 
-        for (int i = 0; i < 2; i++) {
+        for (ConexionCliente cc : listaConexion) {
 
-            CC[i].escribir(mensaje);
+            cc.escribir(mensaje);
         }
 
     }

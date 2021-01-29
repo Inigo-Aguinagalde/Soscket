@@ -12,9 +12,6 @@ public class Cliente {
             HiloEscucha he = new HiloEscucha(s);
             he.start();
 
-            HiloHablar HH = new HiloHablar(s);
-            HH.start();
-
         }catch(Exception e){System.out.println(e);}
     }
 }

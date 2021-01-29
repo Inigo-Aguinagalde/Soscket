@@ -1,18 +1,14 @@
 package Server;
 
+import org.json.simple.JSONObject;
+
 import java.io.BufferedWriter;
 import java.util.Scanner;
-import org.json.simple.*;
 
-
-public class HiloHablar extends Thread{
-
+public class HiloMandarMensaje extends Thread{
     BufferedWriter bw;
-
-    public HiloHablar(BufferedWriter bw){
+    public HiloMandarMensaje(BufferedWriter bw) {
         this.bw=bw;
-
-
     }
 
     @Override
@@ -25,12 +21,10 @@ public class HiloHablar extends Thread{
 
         try {
             bw.write(mensaje.toString());
+            bw.newLine();
             bw.flush();
         }catch (Exception e){
 
         }
-
-
     }
-
 }

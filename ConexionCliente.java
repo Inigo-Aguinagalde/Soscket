@@ -7,45 +7,54 @@ public class ConexionCliente extends Thread {
 
     Socket socket;
     HiloHablar HH;
+    BufferedReader br;
+    BufferedWriter bw;
 
 
-    public ConexionCliente(Socket s) {
+    public ConexionCliente(Socket s) throws IOException {
         socket = s;
-        HH = new HiloHablar(socket);
+
+        br=new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        bw= new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        HH = new HiloHablar(bw);
+
     }
+
 
     @Override
     public void run() {
+        crearHH();
 
-        String linea=null;
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            System.out.println("hey");
-            while ((linea = br.readLine()) != null) {
-
-                Servidor.broadcast(linea);
+        try  {
+            String line;
+            while ( (line = br.readLine()) != null) {
+                System.out.println(line);
+                Servidor.broadcast(line);
             }
+
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        CrearHH();
+
+
     }
 
 
-    public void CrearHH() {
+    public void crearHH() {
         HH.start();
     }
 
     public void escribir(String mensaje) {
         try {
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
             bw.write(mensaje);
             bw.newLine();
             bw.flush();
 
-
         } catch (Exception e) {
+            e.printStackTrace();
 
         }
     }
